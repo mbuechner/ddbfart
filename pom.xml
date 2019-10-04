@@ -6,7 +6,7 @@
     <version>1.0b</version>
     <packaging>jar</packaging>
     <name>DDBfart</name>
-    <url>https://mbuechner.github.io/europack/</url>
+    <url>https://mbuechner.github.io/ddbfart/</url>
     <description>A search and replace text tool for big data dumps.</description>
     <licenses>
         <license>
@@ -27,11 +27,11 @@
     </organization>
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/mbuechner/europack/issues</url>
+        <url>https://github.com/mbuechner/ddbfart/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:git:https://github.com/mbuechner/europack.git</connection>
-        <url>https://github.com/mbuechner/europack</url>
+        <connection>scm:git:https://github.com/mbuechner/ddbfart.git</connection>
+        <url>https://github.com/mbuechner/ddbfart</url>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
