@@ -187,7 +187,9 @@ public class Main extends javax.swing.JFrame {
                 { new Boolean(true), "\\u0098", "", "  ̃ = NON-SORT BEGIN / START OF STRING"},
                 { new Boolean(true), "\\u009c", "", "œ = NON-SORT END / STRING TERMINATOR"},
                 { new Boolean(true), "&#152;", "", "  ̃ = NON-SORT BEGIN / START OF STRING"},
-                { new Boolean(true), "&#156;", "", "œ = NON-SORT END / STRING TERMINATOR"}
+                { new Boolean(true), "&#156;", "", "œ = NON-SORT END / STRING TERMINATOR"},
+                { new Boolean(true), "&#x98;", null, "  ̃ = NON-SORT BEGIN / START OF STRING"},
+                { new Boolean(true), "&#x9C;", null, "œ = NON-SORT END / STRING TERMINATOR"}
             },
             new String [] {
                 "Enable", "Character to find", "Replace with", "Description"

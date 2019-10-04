@@ -215,8 +215,10 @@
             <Component class="javax.swing.JTable" name="jTable2">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="4" rowCount="4">
+                  <Table columnCount="4" rowCount="6">
                     <Column editable="true" title="Enable" type="java.lang.Boolean">
+                      <Data value="true"/>
+                      <Data value="true"/>
                       <Data value="true"/>
                       <Data value="true"/>
                       <Data value="true"/>
@@ -227,14 +229,20 @@
                       <Data value="\\u009c"/>
                       <Data value="&amp;#152;"/>
                       <Data value="&amp;#156;"/>
+                      <Data value="&amp;#x98;"/>
+                      <Data value="&amp;#x9C;"/>
                     </Column>
                     <Column editable="true" title="Replace with" type="java.lang.String">
                       <Data value=""/>
                       <Data value=""/>
                       <Data value=""/>
                       <Data value=""/>
+                      <Data value="null"/>
+                      <Data value="null"/>
                     </Column>
                     <Column editable="true" title="Description" type="java.lang.String">
+                      <Data value="  &#x303; = NON-SORT BEGIN / START OF STRING"/>
+                      <Data value="&#x153; = NON-SORT END / STRING TERMINATOR"/>
                       <Data value="  &#x303; = NON-SORT BEGIN / START OF STRING"/>
                       <Data value="&#x153; = NON-SORT END / STRING TERMINATOR"/>
                       <Data value="  &#x303; = NON-SORT BEGIN / START OF STRING"/>
