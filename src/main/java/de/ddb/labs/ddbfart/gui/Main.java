@@ -6,7 +6,10 @@
 package de.ddb.labs.ddbfart.gui;
 
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,14 +20,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ProgressMonitor;
 import javax.swing.ProgressMonitorInputStream;
@@ -38,6 +47,8 @@ import org.apache.commons.text.StringEscapeUtils;
  * @author Michael Büchner <m.buechner@dnb.de>
  */
 public class Main extends javax.swing.JFrame {
+
+    private int fileCount;
 
     /**
      * Creates new form NewJFrame
@@ -79,6 +90,7 @@ public class Main extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox2 = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
 
         jMenuItem1.setText("Add..");
@@ -233,8 +245,9 @@ public class Main extends javax.swing.JFrame {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Don't change", "UTF-8 composed", "UTF-8 decomposed" }));
 
-        jCheckBox1.setSelected(true);
         jCheckBox1.setText("Dry run (change nothing)");
+
+        jCheckBox2.setText("Overwrite files (!)");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -246,6 +259,8 @@ public class Main extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jCheckBox2)
+                .addGap(10, 10, 10)
                 .addComponent(jCheckBox1)
                 .addContainerGap())
         );
@@ -256,7 +271,8 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBox1))
+                    .addComponent(jCheckBox1)
+                    .addComponent(jCheckBox2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -311,18 +327,55 @@ public class Main extends javax.swing.JFrame {
         final JFileChooser chooser = new JFileChooser();
         chooser.setMultiSelectionEnabled(true);
         chooser.setDialogTitle("Select file(s)...");
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             final DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             final File[] files = chooser.getSelectedFiles();
             if (files != null && model != null) {
-                for (File file : files) {
-                    model.addRow(new String[]{file.toString(), file.canRead() ? "OK" : "NOT readable"});
-                }
+
+                EventQueue.invokeLater(() -> {
+
+                    final JLabel label = new JLabel("0 file(s) added...", JLabel.CENTER);
+
+                    final JOptionPane msg = new JOptionPane(label, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
+                    final JDialog dlg = msg.createDialog("Adding files");
+                    dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                    dlg.addComponentListener(new ComponentAdapter() {
+                        @Override
+                        public void componentShown(ComponentEvent e) {
+                            super.componentShown(e);
+
+                            fileCount = 0;
+                            for (File file : files) {
+                                addFilesToDialog(label, model, file);
+                            }
+                            e.getComponent().setVisible(false);
+                        }
+                    });
+                    dlg.setVisible(true);
+                });
             }
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private int addFilesToDialog(JLabel jlabel, DefaultTableModel model, File file) {
+        if (file.isFile()) {
+            ++fileCount;
+            model.addRow(new String[]{file.toString(), file.canRead() ? "OK" : "NOT readable"});
+            jlabel.setText("Files added: " + NumberFormat.getInstance().format(fileCount));
+            jlabel.paintImmediately(jlabel.getVisibleRect());
+            System.out.println(jlabel.getText());
+        } else if (file.isDirectory()) {
+            File[] dirFiles = file.listFiles();
+            for (File dirFile : dirFiles) {
+                addFilesToDialog(jlabel, model, dirFile);
+            }
+        }
+
+        return fileCount;
+    }
+
 
     private void jScrollPane1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane1MousePressed
         if (evt.getButton() == MouseEvent.BUTTON3) {
@@ -413,10 +466,9 @@ public class Main extends javax.swing.JFrame {
             final String extension = FilenameUtils.getExtension(inputFile.getAbsolutePath());
             final String outputFilename = base + "_fart" + "." + extension;
 
-            try (final BufferedReader in = new BufferedReader(new InputStreamReader(pMonitorInputStream = new ProgressMonitorInputStream(parent, "Reading " + inputFile.getName(), new FileInputStream(inputFile)), Charset.forName("UTF-8"))); 
+            try (final BufferedReader in = new BufferedReader(new InputStreamReader(pMonitorInputStream = new ProgressMonitorInputStream(parent, "Reading " + inputFile.getName(), new FileInputStream(inputFile)), Charset.forName("UTF-8")));
                     final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFilename), Charset.forName("UTF-8")))) {
 
-                
                 final ProgressMonitor progressMonitor = pMonitorInputStream.getProgressMonitor();
                 progressMonitor.setMillisToDecideToPopup(0);
                 progressMonitor.setMillisToPopup(0);
@@ -447,6 +499,14 @@ public class Main extends javax.swing.JFrame {
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
                 isCanceled = true;
+            }
+
+            if (jCheckBox2.isSelected()) {
+                try {
+                    Files.move(Paths.get(outputFilename), inputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
         }
@@ -543,6 +603,7 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuItem jMenuItem1;
