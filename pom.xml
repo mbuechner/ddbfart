@@ -51,8 +51,49 @@
             <type>jar</type>
         </dependency>
     </dependencies>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.1.4</version>
+            </plugin>
+        </plugins>
+    </reporting>
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.1.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs</artifactId>
+                        <version>4.2.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.1</version>
+                <configuration>
+                    <outputDirectory>${basedir}/docs</outputDirectory>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.bernardomg.maven.skins</groupId>
+                        <artifactId>docs-maven-skin</artifactId>
+                        <version>2.0.8</version>
+                    </dependency> 
+                </dependencies>           
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>

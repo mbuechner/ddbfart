@@ -367,9 +367,11 @@ public class Main extends javax.swing.JFrame {
             jlabel.paintImmediately(jlabel.getVisibleRect());
             System.out.println(jlabel.getText());
         } else if (file.isDirectory()) {
-            File[] dirFiles = file.listFiles();
-            for (File dirFile : dirFiles) {
-                addFilesToDialog(jlabel, model, dirFile);
+            final File[] dirFiles = file.listFiles();
+            if (dirFiles != null) {
+                for (File dirFile : dirFiles) {
+                    addFilesToDialog(jlabel, model, dirFile);
+                }
             }
         }
 
