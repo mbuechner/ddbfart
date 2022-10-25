@@ -196,12 +196,12 @@ public class Main extends javax.swing.JFrame {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                { new Boolean(true), "\\u0098", "", "  ̃ = NON-SORT BEGIN / START OF STRING"},
-                { new Boolean(true), "\\u009c", "", "œ = NON-SORT END / STRING TERMINATOR"},
-                { new Boolean(true), "&#152;", "", "  ̃ = NON-SORT BEGIN / START OF STRING"},
-                { new Boolean(true), "&#156;", "", "œ = NON-SORT END / STRING TERMINATOR"},
-                { new Boolean(true), "&#x98;", null, "  ̃ = NON-SORT BEGIN / START OF STRING"},
-                { new Boolean(true), "&#x9C;", null, "œ = NON-SORT END / STRING TERMINATOR"}
+                { Boolean.valueOf(true), "\\u0098", "", "  ̃ = NON-SORT BEGIN / START OF STRING"},
+                { Boolean.valueOf(true), "\\u009c", "", "œ = NON-SORT END / STRING TERMINATOR"},
+                { Boolean.valueOf(true), "&#152;", "", "  ̃ = NON-SORT BEGIN / START OF STRING"},
+                { Boolean.valueOf(true), "&#156;", "", "œ = NON-SORT END / STRING TERMINATOR"},
+                { Boolean.valueOf(true), "&#x98;", null, "  ̃ = NON-SORT BEGIN / START OF STRING"},
+                { Boolean.valueOf(true), "&#x9C;", null, "œ = NON-SORT END / STRING TERMINATOR"}
             },
             new String [] {
                 "Enable", "Character to find", "Replace with", "Description"
